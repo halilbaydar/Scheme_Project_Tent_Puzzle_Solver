@@ -5,10 +5,26 @@
 ;You can replace #f's with your function definitions and define more helper functions as you need to use this template.
 
 ; Solver function
-(define tent_list '((7 3) (6 1) (5 4) (5 8) (5 6) (2 4) (3 7) (2 2) (3 8) (0 4) (1 7) (1 4)))
+(define tent_list '((7 3) (6 1) (3 3) (5 8) (5 6) (2 4) (3 7) (2 2) (3 8) (0 4) (1 7) (1 4)))
 
-(define (TENTS-SOLUTION liste)  (eliminate_neighbor_with_tree_and_tent (car liste) (cadr liste) tent_list '(5 5))) 
+(define all_possible_list'())
 
+;(define (TENTS-SOLUTION liste) (define row_list (car liste)) (define col_list(cadr liste)) (define tree_listesi(caddr liste)) (define table_size(list (length row_list) (length col_list))))
+
+;(define (ilerle tree_list row_list col_list table_size tent_list tree_list_2) (cond
+;                                                                              (null? (eliminate_neighbor_with_tree_and_tent (car tree_list) tree_list_2 tent_list table_size) '())
+;                                                                              ((add_list(eliminate_neighbor_with_tree_and_tent (car tree_list) tree_list_2 tent_list table_size) row_list col_list tent_list))))
+
+(define (add_list indexler row_list col_list tent_list) (cond
+                                                        ((null? indexler) '())
+                                                        ((eq? (and (is_it_available_swap row_list (cadr indexler)) (is_it_available_swap col_list (caddr indexler))) #t)
+                                                        (list all_possible_list (list (list (SWAP-NTH row_list (cadr indexler)) ( (SWAP-NTH col_list (caddr indexler)))) (list tent_list (car indexler))))
+                                                        (add_list (cdr indexler)  row_list col_list tent_list)) ;burda kaldım
+
+(define (is_it_available_swap list n)  (if (eq? n 1)  (if (not (eq? (car list) 0)) #t #f) 
+                                           (is_it_available_swap (cdr list) (- n 1))))
+
+(define (SWAP-NTH list n) (if (= n 1)  (if (not (= (car list) 0)) (cons (-(car list) 1) (cdr list)) '()) (cons (car list) (SWAP-NTH (cdr list) (- n 1)))))
 (define (REPLACE-NTH list n item) (if (= n 1)  (cons item (cdr list)) (cons (car list) (REPLACE-NTH (cdr list) (- n 1) item))))
 
 ; Helper functions
@@ -33,7 +49,7 @@
                                          ((or(> (car(car liste1)) (car table_size))(> (cadr(car liste1)) (cadr table_size)) )  (ele (cdr liste1) table_size))
                                          (else (cons (car liste1) (ele (cdr liste1) table_size)))))
 
-(define eliminate_neighbor_with_tree_and_tent (lambda (kordinat tree_list tent_list table_size) (eliminate_duplicate(eliminate_duplicate(ele (NEIGHBOR-LIST kordinat) table_size) tree_list ) tent_list)))
+(define eliminate_neighbor_with_tree_and_tent (lambda (kordinat tree_list tent_list table_size) (eliminate_deighbor_with_tent(eliminate_duplicate(ele (NEIGHBOR-LIST kordinat) table_size) tree_list ) tent_list)))
 
 (define (eliminate_duplicate komsu_liste_in_table tree_list) (cond
                                                  ((null? komsu_liste_in_table) '())
@@ -41,13 +57,14 @@
                                                                                                                                                                      (eliminate_duplicate (cdr komsu_liste_in_table) tree_list)) ))))
 (define same(lambda (item tree_list) (if (null? tree_list) #f (if(eq? item (car tree_list)) #t (same item (cdr tree_list))))))
   
-(define (deleteitem list1 item) 
-( cond
-    ((null? list1) '())
-    ((equal? (car list1) item) (deleteitem (cdr list1) item)) 
-    (else (cons (car list1) (deleteitem (cdr list1) item)))
-))
-(define (length lst)
-    (cond
-    [(empty? lst)  0]
-    [(cons? lst)   (+ 1 (length (rest lst)))])) 
+(define (deleteitem list1 item) ( cond((null? list1) '())((equal? (car list1) item) (deleteitem (cdr list1) item)) (else (cons (car list1) (deleteitem (cdr list1) item)))))
+(define (length lst) (cond [(empty? lst)  0] [(cons? lst)   (+ 1 (length (rest lst)))]))
+
+
+(define (eliminate_deighbor_with_tent list1 tentlist) (cond
+                                                      ((null? list1) '())
+                                                      ((if (ADJACENT-WITH-LIST (car list1) tentlist ) (eliminate_deighbor_with_tent (cdr list1) tentlist) (cons(car list1) (eliminate_deighbor_with_tent (cdr list1) tentlist)))))) 
+
+
+                                                      
+
