@@ -8,15 +8,15 @@
 (define (temp liste) (list(cons (car liste) (cons (cadr liste) (list '() (caddr liste))))'()))
 (define (TENTS-SOLUTION liste) (define row_list (car liste)) (define col_list(cadr liste)) (define tree_listesi(caddr liste)) (define table_size(list (length (car liste)) (length (cadr liste))))
 (solve tree_listesi (list(cons row_list (cons col_list (list '() (caddr liste))))'()) table_size)) 
-
+;(null? (cadddr (car all_possible_list)))
 (define (solve tree_list all_possible_list table_size)   (cond
-                                                         ;((display all_possible_list))
                                                          ((null? all_possible_list) (display #f))
                                                          ((null? (car all_possible_list)) (solve tree_list (cdr all_possible_list) table_size))
-                                                         ((if(and(eq? (it_it_all_zero(caar all_possible_list)) #t) (eq? (it_it_all_zero(cadar all_possible_list)) #t)) (display (caddar all_possible_list))
+                                                         ((if (not(eq? (it_it_all_zero(caar all_possible_list))(it_it_all_zero(cadar all_possible_list)))) (display #f)
+                                                         (if(and(eq? (it_it_all_zero(caar all_possible_list)) #t) (eq? (it_it_all_zero(cadar all_possible_list)) #t)) (display (caddar all_possible_list))
               (solve tree_list(append (delete_empt(cdr all_possible_list)) (add_list(eliminate_neighbor_with_tree_and_tent(caar (cdddr (car all_possible_list))) tree_list (caddar all_possible_list) table_size) 
           (caar all_possible_list) (cadar all_possible_list) (caddar all_possible_list) (cadddr (car all_possible_list))) 
-          ) table_size) )))) 
+          ) table_size) )))) )
 
 (define (add_list indexler row_list col_list tent_list tree_list) (cond
                                                         ((null? indexler )'() ) 
